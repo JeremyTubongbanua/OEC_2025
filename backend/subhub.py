@@ -36,6 +36,8 @@ def add_new_disaster():
     latitude = request.json.get('latitude')
     radius_km = request.json.get('radius_km')
 
+    print('Received disaster:', disaster_type, name, description, longitude, latitude, radius_km)
+
     if not disaster_type or not name or not description or not longitude or not latitude or not radius_km:
         missing_fields = [field for field in ['disaster_type', 'name', 'description', 'longitude', 'latitude', 'radius_km'] if not locals()[field]]
         return jsonify({'error': f"All fields are required. Missing fields: {', '.join(missing_fields)}"}), 400
