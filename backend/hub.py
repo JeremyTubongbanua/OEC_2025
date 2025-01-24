@@ -47,7 +47,7 @@ def subscribe_to_hub():
 
     return jsonify({'success': True})
 
-# curl -X GET "http://40.233.92.183:3000/get_subhubs?radius_km=100&longitude=43.7&latitude=79.4"
+# curl -X GET "http://40.233.92.183:3000/get_subhubs?radius_km=100&longitude=43.26691127633942&latitude=-79.77373983912754"
 # returns something like [{"id": 1, "name": "Toronto", "longitude": 43.7, "latitude": 79.4, "radius_km": 100}, {"id": 2, "name": "Waterloo", "longitude": 43.5, "latitude": 80.5, "radius_km": 50}]
 @app.route('/get_subhubs')
 def get_subhubs():
@@ -92,12 +92,6 @@ def autocomplete_disaster():
     # todo logic
 
     return jsonify(recommendations)
-
-# curl -X POST "http://40.233.92.183:3001/get_subhubs?radius_km=100&longitude=43.7&latitude=79.4"
-@app.route('/add_new_disaster')
-def add_new_disaster():
-    
-    pass
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(prog='Hub', description='Run a hub instance that users can report to')

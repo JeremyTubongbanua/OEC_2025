@@ -6,9 +6,43 @@ import requests
 from flask import Flask, jsonify, send_file, request
 from flask_cors import CORS
 import sys
+from models.disaster import DisasterFactory, DisasterNatural, DisasterBiological, DisasterManMade, valid_disaster_types
+
+disasters_lock = []
+disasters = []
 
 app = Flask(__name__)
 CORS(app)
+
+# curl -X POST http://40.233.92.183:3001/add_new_disaster
+# disaster_type, name, description, longitude, latitude, radius_km
+@app.route('/add_new_disaster')
+def report():
+    disaster_type = request.args.get('disaster_type')
+    name = request.args.get('name')
+    description = request.args.get('description')
+    longitude = request.args.get('longitude')
+    latitude = request.args.get('latitude')
+    radius_km = request.args.get('radius_km')
+    if disaster_type not in valid_disaster_types:
+        return jsonify({'error': f"Invalid disaster type: {disaster_type}. Valid types are: {valid_disaster_types}"}), 400
+    disaster = DisasterFactory.create_disaster(disaster_type, name, description, longitude, latitude, radius_km)
+    disasters.append(disaster)
+    return jsonify({'success': True, 'disasters': [disaster.to_dict() for disaster in disasters]}), 200
+    
+@app.route('/disasters')
+def disasters():
+    # get a list of disasters from this sub hub
+    pass
+
+def sync_disasters():
+    disasters_iterable = []
+    with disasters_lock:
+        for disaster in disasters:
+            disasters_iterable.append(disaster.to_dict())
+    
+    # print('Syncing Subhubs: ', subhubs_iterable, 'to ./hub/hub.csv')
+    write_csv_file('./hub/hub.csv', subhubs_iterable)
 
 # this function subscribes this subhub to a primary hub
 def subscribe_to_hub(hub_host: str, hub_port: int, ip: str, port: int, id: int, name: str, longitude: float, latitude: float, radius_km: float):
@@ -37,22 +71,6 @@ def subscribe_to_hub(hub_host: str, hub_port: int, ip: str, port: int, id: int, 
     else:
         print(f"Failed to subscribe to hub: {response.status_code}, {response.text}")
         return False
-    
-# curl -X POST "http://40.233.92.183:3001/report
-@app.route('/report')
-def report():
-    # parameters are disaster_type, name, longitude, latitude
-
-    # sucecss message
-    # {'name': 'Burlington', 'id': 0, 'longitude': 43.3255, 'latitude': 79.799}
-
-    
-    pass
-
-@app.route('/disasters')
-def disasters():
-    # get a list of disasters from this sub hub
-    pass
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(prog='Sub Hub', description='Run a sub hub instance that users can report to')
