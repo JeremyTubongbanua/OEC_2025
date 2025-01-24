@@ -3,7 +3,7 @@
 ## Description
 National Disaster's Canada Tracker
 
-National Disaster's Canada(NDC) Tracker is a fully encompassing web application where the community can report disasters and catagorize them. This application allows the public to view, report, and edit disasters within a chosen geographical location that is displayed for ease of understanding. 
+National Disaster's Canada(NDC) Tracker is a fully encompassing web application where the community can report disasters and catagorize them. This application allows the public to view, report, and edit disasters within a chosen geographical location. 
 
 ## Breakdown of Front-end
 
