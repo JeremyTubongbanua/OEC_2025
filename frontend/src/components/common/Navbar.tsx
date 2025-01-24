@@ -15,6 +15,9 @@ export default function Navbar() {
             <Link href="/report" className="mr-4 hover:underline">
                Report a Disaster
             </Link>
+            <Link href="/admin" className="mr-4 hover:underline">
+               Admin
+            </Link>
          </div>
       </nav>
    );

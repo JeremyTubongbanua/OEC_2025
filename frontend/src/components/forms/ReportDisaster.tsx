@@ -55,50 +55,49 @@ export default function ReportDisaster() {
       const longitude = data.longitude;
       const latitude = data.latitude;
 
-
       let get_subhubs_url = `http://40.233.92.183:3000/get_subhubs?radius_km=${radius}&longitude=${longitude}&latitude=${latitude}`;
-            console.log('get_subhubs_url:', get_subhubs_url);
-            fetch(get_subhubs_url)
-               .then(response => response.json())
-               .then(data => {
-                  // console.log('Subhubs data:', data);
-                  let subhubs = data;
+      console.log('get_subhubs_url:', get_subhubs_url);
+      fetch(get_subhubs_url)
+         .then((response) => response.json())
+         .then((data) => {
+            // console.log('Subhubs data:', data);
+            let subhubs = data;
 
-                  // for each subhub, make a /disasters call
-                  for (let i = 0; i < subhubs.length; i++) {
-                     let subhub = subhubs[i];
-                     let add_new_disaster_url = `http://${subhub.ip}:${subhub.port}/add_new_disaster`;
-                     let payload = {
-                        'disaster_type': disasterType,
-                        'name': name,
-                        'description': description,
-                        'longitude': longitude,
-                        'latitude': latitude,
-                        'radius_km': radius,
-                     };
+            // for each subhub, make a /disasters call
+            for (let i = 0; i < subhubs.length; i++) {
+               let subhub = subhubs[i];
+               let add_new_disaster_url = `http://${subhub.ip}:${subhub.port}/add_new_disaster`;
+               let payload = {
+                  disaster_type: disasterType,
+                  name: name,
+                  description: description,
+                  longitude: longitude,
+                  latitude: latitude,
+                  radius_km: radius,
+               };
 
-                     // put request
-                     fetch(add_new_disaster_url, {
-                        method: 'POST',
-                        headers: {
-                           'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify(payload),
-                     })
-                        .then(response => response.json())
-                        .then(data => {
-                           console.log('Disaster data:', data);
-                        })
-                        .catch(error => {
-                           console.error('Error adding disaster:', error);
-                        });
-                  }
-
-                  console.log('Subhubs:', subhubs);
+               // put request
+               fetch(add_new_disaster_url, {
+                  method: 'POST',
+                  headers: {
+                     'Content-Type': 'application/json',
+                  },
+                  body: JSON.stringify(payload),
                })
-               .catch(error => {
-                  console.error('Error fetching subhubs:', error);
-               });
+                  .then((response) => response.json())
+                  .then((data) => {
+                     console.log('Disaster data:', data);
+                  })
+                  .catch((error) => {
+                     console.error('Error adding disaster:', error);
+                  });
+            }
+
+            console.log('Subhubs:', subhubs);
+         })
+         .catch((error) => {
+            console.error('Error fetching subhubs:', error);
+         });
 
       // const formattedAddress = address.replace(/\s+/g, '+');
       // fetchLngLat(formattedAddress).then((data) => {
@@ -110,7 +109,6 @@ export default function ReportDisaster() {
       //          throw new Error('Error fetching latitude and longitude');
       //       }
       //       console.log(lat, lng);
-
 
       //       // now look at each sub hub and make /disasters calls to each
       //     } catch (error) {
@@ -165,32 +163,41 @@ export default function ReportDisaster() {
             <div className="flex flex-col gap-1">
                <Label htmlFor="address">Address</Label>
                <div className="flex gap-2">
-                 <input
-                   {...register('address')}
-                   type="text"
-                   name="address"
-                   className="border p-1 rounded-lg flex-grow"
-                 />
-                 <Button
-                   type="button"
-                   onClick={() => {
-                     if (navigator.geolocation) {
-                        navigator.geolocation.getCurrentPosition(
-                           (position) => {
-                              const { latitude, longitude } = position.coords;
-                              console.log('Latitude:', latitude, 'Longitude:', longitude);
-                           },
-                           (error) => {
-                              console.error('Error getting location:', error);
-                           }
-                        );
-                     } else {
-                        console.error('Geolocation is not supported by this browser.');
-                     }
-                   }}
-                 >
-                   Get My Location
-                 </Button>
+                  <input
+                     {...register('address')}
+                     type="text"
+                     name="address"
+                     className="border p-1 rounded-lg flex-grow"
+                  />
+                  <Button
+                     type="button"
+                     onClick={() => {
+                        if (navigator.geolocation) {
+                           navigator.geolocation.getCurrentPosition(
+                              (position) => {
+                                 console.log(
+                                    'Latitude:',
+                                    position.coords.latitude,
+                                    'Longitude:',
+                                    position.coords.longitude
+                                 );
+                              },
+                              (error) => {
+                                 console.error(
+                                    'Error getting location:',
+                                    error
+                                 );
+                              }
+                           );
+                        } else {
+                           console.error(
+                              'Geolocation is not supported by this browser.'
+                           );
+                        }
+                     }}
+                  >
+                     Get My Location
+                  </Button>
                </div>
             </div>
 
@@ -250,23 +257,27 @@ export default function ReportDisaster() {
             <div className="flex flex-col gap-1">
                <Label htmlFor="radius">Radius</Label>
                <select
-                 {...register('radius')}
-                 name="radius"
-                 className="border p-1 rounded-lg"
+                  {...register('radius')}
+                  name="radius"
+                  className="border p-1 rounded-lg"
                >
-                 <option value="1">1 km</option>
-                 <option value="5">5 km</option>
-                 <option value="10">10 km</option>
-                 <option value="50">50 km</option>
-                 <option value="100">100 km</option>
-                 <option value="1000">100000 km</option>
+                  <option value="1">1 km</option>
+                  <option value="5">5 km</option>
+                  <option value="10">10 km</option>
+                  <option value="50">50 km</option>
+                  <option value="100">100 km</option>
+                  <option value="1000">100000 km</option>
                </select>
             </div>
 
             <Button type="submit">Submit</Button>
 
-         {errors.address && <span className="text-red-500">Address is required</span>}
-         {errors.disasterType && <span className="text-red-500">Disaster type is required</span>}
+            {errors.address && (
+               <span className="text-red-500">Address is required</span>
+            )}
+            {errors.disasterType && (
+               <span className="text-red-500">Disaster type is required</span>
+            )}
          </form>
       </div>
    );
