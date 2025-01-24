@@ -17,7 +17,7 @@ CORS(app)
 # curl -X POST http://40.233.92.183:3001/add_new_disaster
 # disaster_type, name, description, longitude, latitude, radius_km
 @app.route('/add_new_disaster')
-def report():
+def add_new_disaster():
     disaster_type = request.args.get('disaster_type')
     name = request.args.get('name')
     description = request.args.get('description')
@@ -28,6 +28,7 @@ def report():
         return jsonify({'error': f"Invalid disaster type: {disaster_type}. Valid types are: {valid_disaster_types}"}), 400
     disaster = DisasterFactory.create_disaster(disaster_type, name, description, longitude, latitude, radius_km)
     disasters.append(disaster)
+    sync_disasters(args.name)  # Sync disasters after adding a new one
     return jsonify({'success': True, 'disasters': [disaster.to_dict() for disaster in disasters]}), 200
     
 @app.route('/disasters')
@@ -35,14 +36,13 @@ def disasters():
     # get a list of disasters from this sub hub
     pass
 
-def sync_disasters():
+def sync_disasters(name):
     disasters_iterable = []
     with disasters_lock:
         for disaster in disasters:
             disasters_iterable.append(disaster.to_dict())
     
-    # print('Syncing Subhubs: ', subhubs_iterable, 'to ./hub/hub.csv')
-    write_csv_file('./hub/hub.csv', subhubs_iterable)
+    write_csv_file(f'./{name}/{name}.csv', disasters_iterable)
 
 # this function subscribes this subhub to a primary hub
 def subscribe_to_hub(hub_host: str, hub_port: int, ip: str, port: int, id: int, name: str, longitude: float, latitude: float, radius_km: float):
@@ -84,6 +84,7 @@ if __name__ == '__main__':
     parser.add_argument('--longitude', type=float, help='The longitude of the sub hub')
     parser.add_argument('--latitude', type=float, help='The latitude of the sub hub')
     parser.add_argument('--radius_km', type=float, help='The radius of the sub hub in kilometers')
+    parser.add_argument('--existing-disasters', type=str, help='The path to a CSV file containing existing disasters')
 
     args = parser.parse_args()
     success = subscribe_to_hub(
@@ -102,6 +103,10 @@ if __name__ == '__main__':
     else:
         print("Sub Hub failed to start")
         sys.exit(1)
+
+    if args.existing_disasters:
+        disasters = read_csv_file(args.existing_disasters)
+        print('Loaded existing disasters:', disasters)
 
     app.run(host=parser.parse_args().host, port=parser.parse_args().port)
 
