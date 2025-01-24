@@ -58,21 +58,27 @@ export default function EnterAddress() {
          radius_km: string;
       };
 
-      let jeremydata: JeremyData[] = [];
       fetch(
          `http://40.233.92.183:3000/get_subhubs?radius_km=${radius}&longitude=${lng}&latitude=${lat}`
       ).then((response) => {
          response.json().then((data) => {
-            jeremydata = data;
-            console.log('jeremy', jeremydata);
+            const jeremydata: JeremyData[] = data;
+
+            jeremydata.forEach(({ port, name }) => {
+               fetch(`http://40.233.92.183:${port}/disasters`).then(
+                  (response) => {
+                     response.json().then((data) => {
+                        console.log(`Disasters for subhub ${name}:`, data);
+                     });
+                  }
+               );
+            });
          });
       });
 
       //! Call disaster API -> get a list of disasters and associated area
-      jeremydata.forEach((item: any) => {
-         fetch(`http://40.233.92.183:${item.port}/disasters`);
-      });
    }
+
    return (
       <div className="w-100 border-2 rounded-xl p-4 flex flex-col gap-4">
          <h1 className="text-lg font-semibold text-red-500">
