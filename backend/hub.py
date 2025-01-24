@@ -15,16 +15,6 @@ subhubs = []
 def euclidian_distance(longitude1, latitude1, longitude2, latitude2):
     return ((float(longitude1) - float(longitude2)) ** 2 + (float(latitude1) - float(latitude2)) ** 2) ** 0.5
 
-def sync_subhubs():
-    # take subhubs array and save it into a csv
-    subhubs_iterable = []
-    with subhub_lock:
-        for subhub in subhubs:
-            subhubs_iterable.append([subhub.ip, subhub.port, subhub.id, subhub.name, subhub.longitude, subhub.latitude, subhub.radius_km])
-    
-    # print('Syncing Subhubs: ', subhubs_iterable, 'to ./hub/hub.csv')
-    write_csv_file('./hub/hub.csv', subhubs_iterable)
-
 # curl http://40.233.92.183:3000/subscribe_to_hub
 # POST 
 # parameters are id, name, longitude, latitude, radius_km
@@ -102,11 +92,5 @@ if __name__ == '__main__':
     parser.add_argument('--port', type=int, default=3000, help='The port to run the hub on')
 
     args = parser.parse_args()
-
-    def sync_subhubs_periodically():
-        sync_subhubs()
-        threading.Timer(3.0, sync_subhubs_periodically).start()
-
-    sync_subhubs_periodically()
 
     app.run(host=args.host, port=args.port, debug=True)
