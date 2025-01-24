@@ -1,8 +1,16 @@
 # oec_2025
 
 ## Description
+National Disaster's Canada Tracker
 
-## License
+This webapp was developed to help track natural disasters, diseases and manmade disasters.
+
+National Disaster's Canada(NDC) Tracker is a fully encompassing web application where the community can report disasters and catagorize them. This application allows the public to view, report, and edit disasters within a chosen geographical location that is displayed for ease of understanding. 
+
+## Breakdown of Front-end
+
+
+# License
 
 BSD 3-Clause License
 
