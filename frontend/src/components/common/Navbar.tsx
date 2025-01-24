@@ -5,15 +5,15 @@ export default function Navbar() {
       <nav className="flex justify-between items-center py-4 border-b font-mono w-full px-40">
          <Link href={'/'}>LOGO HERE</Link>
 
-         <div>
-            <Link href="/login" className="mr-4">
-               Login
+         <div className="flex items-center gap-6">
+            <Link href="/" className="mr-4  hover:underline">
+               Home
             </Link>
-            <Link href="/signup" className="mr-4">
-               Signup
+            <Link href="/disasters" className="mr-4 hover:underline">
+               Find Disasters
             </Link>
-            <Link href="/dashboard" className="mr-4">
-               About
+            <Link href="/report" className="mr-4 hover:underline">
+               Report a Disaster
             </Link>
          </div>
       </nav>
