@@ -13,6 +13,7 @@ tmux kill-ses -t subhub0
 tmux kill-ses -t subhub1
 tmux kill-ses -t subhub2
 tmux kill-ses -t subhub3
+tmux kill-ses -t subhub4
 
 tmux new-session -d -s hub 'python3 hub.py --host 0.0.0.0 --port 3000'
 
