@@ -1,3 +1,8 @@
 natural,Earthquake,Major earthquake,-118.2437,34.0522,50.0
 natural,Earthquake,Major earthquake,-118.2437,34.0522,50.0
 natural,Earthquake,Major earthquake,-118.2437,34.0522,50.0
+manmade,Oil leak,Hazardous oil spill requiring containment,43.26691127633942,-79.77373983912754,3.0
+natural,Tornado,Severe windstorm causing widespread damage,43.251335599504124,-79.87690025166192,50.0
+manmade,Transportation accident,Major vehicle collision incident,43.15423471652471,-79.91809897193221,10.0
+natural,Landslide,Ground movement causing terrain instability,43.22583209403948,-79.88004385453455,5.0
+biological,Food contamination crisis,Widespread food supply contamination,43.23032686621058,-80.08083395630251,40.0
