@@ -35,6 +35,8 @@ class Disaster():
 class DisasterNatural(Disaster):
     def __init__(self, disaster_id, disaster_type, name, description, longitude, latitude, radius_km):
         super().__init__(disaster_id, disaster_type, name, description, longitude, latitude, radius_km)
+        self.severity = None
+        self.affected_species = None
 
     def set_severity(self, severity):
         self.severity = severity
@@ -53,6 +55,8 @@ class DisasterNatural(Disaster):
 class DisasterBiological(Disaster):
     def __init__(self, disaster_id, disaster_type, name, description, longitude, latitude, radius_km):
         super().__init__(disaster_id, disaster_type, name, description, longitude, latitude, radius_km)
+        self.pathogen = None
+        self.transmission_rate = None
 
     def set_pathogen(self, pathogen):
         self.pathogen = pathogen
@@ -71,6 +75,8 @@ class DisasterBiological(Disaster):
 class DisasterManMade(Disaster):
     def __init__(self, disaster_id, disaster_type, name, description, longitude, latitude, radius_km):
         super().__init__(disaster_id, disaster_type, name, description, longitude, latitude, radius_km)
+        self.cause = None
+        self.economic_impact = None
 
     def set_cause(self, cause):
         self.cause = cause

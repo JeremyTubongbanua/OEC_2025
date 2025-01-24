@@ -64,6 +64,28 @@ def add_new_disaster():
     sync_disasters(args.name)  # Sync disasters after adding a new one
     return jsonify({'success': True}), 200
 
+# curl -X POST http://40.233.92.183:3001/remove_disaster -H "Content-Type: application/json" -d '{"disaster_id": "1"}'
+# curl -X POST http://40.233.92.183:3001/remove_disaster \
+# -H "Content-Type: application/json" \
+# -d '{
+#     "disaster_id": 0
+#     }'
+
+@app.route('/remove_disaster', methods=['POST'])
+def remove_disaster():
+
+    print(request.json)
+    disaster_id = request.json.get('disaster_id')
+
+    for disaster in disasters:
+        print(disaster.to_dict())
+        if str(disaster.disaster_id) == str(disaster_id):
+            with disasters_lock:
+                disasters.remove(disaster)
+            sync_disasters(args.name)  # Sync disasters after removing one
+            return jsonify({'success': True}), 200
+    return jsonify({'error': f"Disaster with id {disaster_id} not found"}), 404
+
 # curl -X GET "http://40.233.92.183:3001/disasters"
 @app.route('/disasters')
 def get_disasters():
