@@ -1,11 +1,21 @@
 import 'leaflet/dist/leaflet.css';
-import { Circle, MapContainer, TileLayer } from 'react-leaflet';
+import { Circle, MapContainer, Marker, Popup, TileLayer } from 'react-leaflet';
+import L from 'leaflet';
+
+interface Disaster {
+   name: string;
+   latitude: string;
+   longitude: string;
+   radius_km: string;
+   disaster_type: string;
+}
 
 interface MapProps {
    position: [number, number];
+   disasters: any[];
 }
 
-function Map({ position }: MapProps) {
+function Map({ position, disasters }: MapProps) {
    return (
       <MapContainer
          center={position as [number, number]}
@@ -17,13 +27,39 @@ function Map({ position }: MapProps) {
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
          />
 
-         <Circle
-            center={position}
-            radius={1000}
-            color="red"
-            fillColor="red"
-            fillOpacity={0.2}
-         />
+         {disasters.map((disaster) => (
+            <>
+               <Circle
+                  center={
+                     [
+                        Number(disaster.longitude),
+                        Number(disaster.latitude),
+                     ] as [number, number]
+                  }
+                  radius={1000}
+                  key={disaster.name}
+                  pathOptions={{ color: 'red' }}
+               />
+               <Marker
+                  position={
+                     [
+                        Number(disaster.longitude),
+                        Number(disaster.latitude),
+                     ] as [number, number]
+                  }
+                  icon={L.icon({
+                     iconUrl: '/map-marker.svg',
+                     iconSize: [25, 41],
+                     iconAnchor: [12, 41],
+                  })}
+               >
+                  <Popup>
+                     <h3>{disaster.name}</h3>
+                     <p>{disaster.disaster_type}</p>
+                  </Popup>
+               </Marker>
+            </>
+         ))}
       </MapContainer>
    );
 }

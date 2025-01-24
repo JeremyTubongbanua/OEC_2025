@@ -8,6 +8,8 @@ import { Button } from '@/components/ui/button';
 import { Label } from '../ui/label';
 import fetchLngLat from '@/actions/fetchLngLat';
 
+import { LeafletMap } from '@/components/common/Map';
+
 const reportDisasterSchema = z.object({
    address: z.string(),
    radius: z.string(),
