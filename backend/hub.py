@@ -13,13 +13,17 @@ subhub_lock = threading.Lock()
 subhubs = []
 
 def euclidian_distance(longitude1, latitude1, longitude2, latitude2):
-    return ((longitude1 - longitude2) ** 2 + (latitude1 - latitude2) ** 2) ** 0.5
+    return ((float(longitude1) - float(longitude2)) ** 2 + (float(latitude1) - float(latitude2)) ** 2) ** 0.5
 
 def sync_subhubs():
     # take subhubs array and save it into a csv
+    subhubs_iterable = []
     with subhub_lock:
-        write_csv_file('./hub/hub.csv', subhubs)
-
+        for subhub in subhubs:
+            subhubs_iterable.append([subhub.ip, subhub.port, subhub.id, subhub.name, subhub.longitude, subhub.latitude, subhub.radius_km])
+    
+    # print('Syncing Subhubs: ', subhubs_iterable, 'to ./hub/hub.csv')
+    write_csv_file('./hub/hub.csv', subhubs_iterable)
 
 # curl http://40.233.92.183:3000/subscribe_to_hub
 # POST 
@@ -28,7 +32,7 @@ def sync_subhubs():
 def subscribe_to_hub():
     # parameters are id, name, longitude, latitude, radius_km
 
-    host = request.form.get('host')
+    ip = request.form.get('ip')
     port = request.form.get('port')
     id = request.form.get('id')
     name = request.form.get('name')
@@ -37,22 +41,37 @@ def subscribe_to_hub():
     radius_km = request.form.get('radius_km')
 
     # add the subhub
-    print('Appending New Sub Hub: ', host, port, id, name, longitude, latitude, radius_km)
-    subhubs.append(SubHub(host, port, id, name, longitude, latitude, radius_km))
-    print('Appended New Sub Hub: ', host, port, id, name, longitude, latitude, radius_km)
+    print('Appending New Sub Hub: ', ip, port, id, name, longitude, latitude, radius_km)
+    subhubs.append(SubHub(ip, port, id, name, longitude, latitude, radius_km))
+    print('Appended New Sub Hub: ', ip, port, id, name, longitude, latitude, radius_km)
 
     return jsonify({'success': True})
 
-# curl http://40.233.92.183:3000/get_subhubs?radius_km=100&longitude=43.7&latitude=79.4
+# curl -X GET "http://40.233.92.183:3000/get_subhubs?radius_km=100&longitude=43.7&latitude=79.4"
 # returns something like [{"id": 1, "name": "Toronto", "longitude": 43.7, "latitude": 79.4, "radius_km": 100}, {"id": 2, "name": "Waterloo", "longitude": 43.5, "latitude": 80.5, "radius_km": 50}]
 @app.route('/get_subhubs')
 def get_subhubs():
     # parameters are longitude and latitude
 
+    print('Received args:', request.args)
+
     radius_km = request.args.get('radius_km')
+    if radius_km is None:
+        return jsonify({'error': 'radius_km parameter is required'}), 400
 
     longitude = request.args.get('longitude')
+    if longitude is None:
+        return jsonify({'error': 'longitude parameter is required'}), 400
+
     latitude = request.args.get('latitude')
+    if latitude is None:
+        return jsonify({'error': 'latitude parameter is required'}), 400
+
+    print('Received args:', {'radius_km': radius_km, 'longitude': longitude, 'latitude': latitude})
+
+    radius_km = float(radius_km)
+    longitude = float(longitude)
+    latitude = float(latitude)
 
     closest_subhubs = []
 
@@ -61,7 +80,7 @@ def get_subhubs():
             if euclidian_distance(subhub.longitude, subhub.latitude, longitude, latitude) <= radius_km:
                 closest_subhubs.append(subhub)
 
-        return jsonify(closest_subhubs)
+        return jsonify([subhub.to_dict() for subhub in closest_subhubs])
     return jsonify([])
 
 @app.route('/autocomplete_disaster')
@@ -74,10 +93,10 @@ def autocomplete_disaster():
 
     return jsonify(recommendations)
 
-
+# curl -X POST "http://40.233.92.183:3001/get_subhubs?radius_km=100&longitude=43.7&latitude=79.4"
 @app.route('/add_new_disaster')
 def add_new_disaster():
-    # parameters are disaster_type, 
+    
     pass
 
 if __name__ == '__main__':
