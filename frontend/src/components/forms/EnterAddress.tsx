@@ -107,13 +107,41 @@ export default function EnterAddress() {
          >
             <div className="flex flex-col gap-1">
                <Label htmlFor="address">Address</Label>
-               <input
-                  {...register('address')}
-                  type="text"
-                  name="address"
-                  className="border p-1  rounded-lg"
-                  required
-               />
+               <div className="flex gap-2">
+                 <input
+                   {...register('address')}
+                   type="text"
+                   name="address"
+                   className="border p-1 rounded-lg flex-grow"
+                   required
+                 />
+                 <Button
+                   type="button"
+                   onClick={() => {
+                     navigator.geolocation.getCurrentPosition((position) => {
+                        const { latitude, longitude } = position.coords;
+                        setLat(latitude);
+                        setLng(longitude);
+                        console.log(latitude, longitude);
+                        // also update the address field
+                        fetch(
+                          `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`
+                        )
+                          .then((response) => response.json())
+                          .then((data) => {
+                            const address = data.display_name;
+                            console.log(address);
+                            const addressInput = document.querySelector('input[name="address"]') as HTMLInputElement | null;
+                            if (addressInput) {
+                              addressInput.value = address;
+                            }
+                          });
+                      });
+                   }}
+                 >
+                   Get My Location
+                 </Button>
+               </div>
             </div>
             <div className="flex flex-col gap-1">
                <Label htmlFor="radius">Radius</Label>
