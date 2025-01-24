@@ -70,23 +70,7 @@ export default function EnterAddress() {
 
       //! Call disaster API -> get a list of disasters and associated area
       jeremydata.forEach((item: any) => {
-         // fetch(
-         //    `http://40.233.92.183:3000/get_subhubs?radius_km=${radius}&longitude=${lng}&latitude=${lat}`,
-         //    {
-         //       method: 'POST',
-         //       headers: {
-         //          'Content-Type': 'application/json',
-         //       },
-         //       body: JSON.stringify(item),
-         //    }
-         // )
-         //    .then((response) => response.json())
-         //    .then((result) => {
-         //       console.log('Success:', result);
-         //    })
-         //    .catch((error) => {
-         //       console.error('Error:', error);
-         //    });
+         fetch(`http://40.233.92.183:${item.port}/disasters`);
       });
    }
    return (
