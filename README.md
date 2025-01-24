@@ -7,6 +7,9 @@ National Disaster's Canada(NDC) Tracker is a fully encompassing web application 
 
 ## Breakdown of Front-end
 
+## Breakdown of Back-end
+
+## Technologies Used
 
 # License
 
