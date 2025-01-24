@@ -3,11 +3,11 @@ valid_disaster_types = ['natural', 'biological', 'manmade']
 class DisasterFactory():
     def create_disaster(self, disaster_type, name, description, longitude, latitude, radius_km):
         if disaster_type == 'natural':
-            return DisasterNatural(name, description, longitude, latitude, radius_km)
+            return DisasterNatural(disaster_type, name, description, longitude, latitude, radius_km)
         elif disaster_type == 'biological':
-            return DisasterBiological(name, description, longitude, latitude, radius_km)
+            return DisasterBiological(disaster_type, name, description, longitude, latitude, radius_km)
         elif disaster_type == 'manmade':
-            return DisasterManMade(name, description, longitude, latitude, radius_km)
+            return DisasterManMade(disaster_type, name, description, longitude, latitude, radius_km)
         else:
             raise ValueError(f"Invalid disaster type: {disaster_type}. Valid types are: {valid_disaster_types}")
 
