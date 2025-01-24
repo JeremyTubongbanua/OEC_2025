@@ -12,8 +12,15 @@ CORS(app)
 subhub_lock = threading.Lock()
 subhubs = []
 
-def euclidian_distance(longitude1, latitude1, longitude2, latitude2):
-    return ((float(longitude1) - float(longitude2)) ** 2 + (float(latitude1) - float(latitude2)) ** 2) ** 0.5
+def is_point_in_circle(longitude1, latitude1, longitude2, latitude2, radius_km):
+    """
+    Determines if point2 falls within circle centered at point1
+    """
+    # Convert degree differences to kilometers
+    km_per_degree = 1.0
+    distance = (((float(longitude1) - float(longitude2)) * km_per_degree) ** 2 + 
+               ((float(latitude1) - float(latitude2)) * km_per_degree) ** 2) ** 0.5
+    return distance <= float(radius_km)
 
 # curl http://40.233.92.183:3000/subscribe_to_hub
 # POST 
@@ -70,7 +77,7 @@ def get_subhubs():
 
     with subhub_lock:
         for subhub in subhubs:
-            if euclidian_distance(subhub.longitude, subhub.latitude, longitude, latitude) <= radius_km:
+            if is_point_in_circle(subhub.longitude, subhub.latitude, longitude, latitude, radius_km):
                 closest_subhubs.append(subhub)
 
         return jsonify([subhub.to_dict() for subhub in closest_subhubs])
@@ -93,4 +100,4 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
 
-    app.run(host=args.host, port=args.port, debug=True)
+    app.run(host=args.host, port=args.port, debug=False)
