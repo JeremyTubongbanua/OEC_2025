@@ -70,8 +70,11 @@ def get_subhubs():
     print('Received args:', {'radius_km': radius_km, 'longitude': longitude, 'latitude': latitude})
 
     radius_km = float(radius_km)
-    longitude = float(longitude)
-    latitude = float(latitude)
+    try:
+        longitude = float(longitude)
+        latitude = float(latitude)
+    except ValueError:
+        return jsonify({'error': 'longitude and latitude must be valid numbers'}), 400
 
     closest_subhubs = []
 

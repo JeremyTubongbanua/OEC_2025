@@ -7,42 +7,83 @@ from flask import Flask, jsonify, send_file, request
 from flask_cors import CORS
 import sys
 from models.disaster import DisasterFactory, DisasterNatural, DisasterBiological, DisasterManMade, valid_disaster_types
+from csv_utils import write_csv_file, read_csv_file, file_exists
 
-disasters_lock = []
+import threading
+
+disasters_lock = threading.Lock()
 disasters = []
 
 app = Flask(__name__)
 CORS(app)
 
-# curl -X POST http://40.233.92.183:3001/add_new_disaster
-# disaster_type, name, description, longitude, latitude, radius_km
-@app.route('/add_new_disaster')
+# curl -X POST http://40.233.92.183:3001/add_new_disaster \
+# -H "Content-Type: application/json" \
+# -d '{
+#   "disaster_type": "natural",
+#   "name": "Earthquake",
+#   "description": "Major earthquake",
+#   "longitude": -118.2437,
+#   "latitude": 34.0522,
+#   "radius_km": 50
+# }'
+@app.route('/add_new_disaster', methods=['POST'])
 def add_new_disaster():
-    disaster_type = request.args.get('disaster_type')
-    name = request.args.get('name')
-    description = request.args.get('description')
-    longitude = request.args.get('longitude')
-    latitude = request.args.get('latitude')
-    radius_km = request.args.get('radius_km')
+    disaster_type = request.json.get('disaster_type')
+    name = request.json.get('name')
+    description = request.json.get('description')
+    longitude = request.json.get('longitude')
+    latitude = request.json.get('latitude')
+    radius_km = request.json.get('radius_km')
+
+    if not disaster_type or not name or not description or not longitude or not latitude or not radius_km:
+        missing_fields = [field for field in ['disaster_type', 'name', 'description', 'longitude', 'latitude', 'radius_km'] if not locals()[field]]
+        return jsonify({'error': f"All fields are required. Missing fields: {', '.join(missing_fields)}"}), 400
+
+    try:
+        longitude = float(longitude)
+        latitude = float(latitude)
+        radius_km = float(radius_km)
+    except ValueError:
+        return jsonify({'error': 'Longitude, latitude, and radius_km must be valid numbers'}), 400
+
     if disaster_type not in valid_disaster_types:
         return jsonify({'error': f"Invalid disaster type: {disaster_type}. Valid types are: {valid_disaster_types}"}), 400
-    disaster = DisasterFactory.create_disaster(disaster_type, name, description, longitude, latitude, radius_km)
-    disasters.append(disaster)
+    disaster = DisasterFactory().create_disaster(
+        disaster_type=disaster_type,
+        name=name,
+        description=description,
+        longitude=longitude,
+        latitude=latitude,
+        radius_km=radius_km
+    )
+    with disasters_lock:
+        disasters.append(disaster)
     sync_disasters(args.name)  # Sync disasters after adding a new one
-    return jsonify({'success': True, 'disasters': [disaster.to_dict() for disaster in disasters]}), 200
-    
+    return jsonify({'success': True}), 200
+
+# curl -X GET "http://40.233.92.183:3001/disasters"
 @app.route('/disasters')
-def disasters():
+def get_disasters():
+    with disasters_lock:
+        return jsonify({'disasters': [disaster.to_dict() for disaster in disasters]}), 200
     # get a list of disasters from this sub hub
-    pass
+    return jsonify({'disasters': []}), 200
 
 def sync_disasters(name):
     disasters_iterable = []
     with disasters_lock:
         for disaster in disasters:
             disasters_iterable.append(disaster.to_dict())
+
+    print('Syncing disasters:', disasters_iterable)
+
+    # convert to array
+    disasters_iterable_array = []
+    for disaster in disasters_iterable:
+        disasters_iterable_array.append(list(disaster.values()))
     
-    write_csv_file(f'./{name}/{name}.csv', disasters_iterable)
+    write_csv_file(f'./{name}/{name}.csv', disasters_iterable_array)
 
 # this function subscribes this subhub to a primary hub
 def subscribe_to_hub(hub_host: str, hub_port: int, ip: str, port: int, id: int, name: str, longitude: float, latitude: float, radius_km: float):
@@ -105,8 +146,25 @@ if __name__ == '__main__':
         sys.exit(1)
 
     if args.existing_disasters:
-        disasters = read_csv_file(args.existing_disasters)
-        print('Loaded existing disasters:', disasters)
+        if file_exists(args.existing_disasters):
+            disasters_from_file = read_csv_file(args.existing_disasters)
+
+            for disaster in disasters_from_file:
+                disaster_type, name, description, longitude, latitude, radius_km = disaster
+                disaster = DisasterFactory().create_disaster(
+                    disaster_type=disaster_type,
+                    name=name,
+                    description=description,
+                    longitude=longitude,
+                    latitude=latitude,
+                    radius_km=radius_km
+                )
+                with disasters_lock:
+                    disasters.append(disaster)
+
+            print('Loaded existing disasters:', disasters)
+        else:
+            print(f"File {args.existing_disasters} does not exist")
 
     app.run(host=parser.parse_args().host, port=parser.parse_args().port)
 
