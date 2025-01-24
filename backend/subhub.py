@@ -152,8 +152,9 @@ if __name__ == '__main__':
             disasters_from_file = read_csv_file(args.existing_disasters)
 
             for disaster in disasters_from_file:
-                disaster_type, name, description, longitude, latitude, radius_km = disaster
+                disaster_id, disaster_type, name, description, longitude, latitude, radius_km = disaster
                 disaster = DisasterFactory().create_disaster(
+                    disaster_id=disaster_id,
                     disaster_type=disaster_type,
                     name=name,
                     description=description,
