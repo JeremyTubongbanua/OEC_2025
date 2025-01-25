@@ -26,13 +26,13 @@ export default function ReportDisaster() {
    } = useForm({
       resolver: zodResolver(reportDisasterSchema),
       defaultValues: {
-         address: '',
+         address: '1280 Main St W, Hamilton, ON L8S 4L8',
          radius: '100',
          disasterType: 'natural',
          name: 'Earthquake',
          description: '123',
-         longitude: 0,
-         latitude: 0,
+         longitude: -79.9226783,
+         latitude: 43.2609974,
       },
    });
 
@@ -69,6 +69,7 @@ export default function ReportDisaster() {
                let subhub = subhubs[i];
                let add_new_disaster_url = `http://${subhub.ip}:${subhub.port}/add_new_disaster`;
                let payload = {
+                  disaster_id:name,
                   disaster_type: disasterType,
                   name: name,
                   description: description,
