@@ -44,12 +44,6 @@ class DisasterNatural(Disaster):
     def set_affected_species(self, affected_species):
         self.affected_species = affected_species
 
-    def to_dict(self):
-        return {
-            **super().to_dict(),
-            'severity': self.severity,
-            'affected_species': self.affected_species
-        }
         
 
 class DisasterBiological(Disaster):
@@ -64,12 +58,6 @@ class DisasterBiological(Disaster):
     def set_transmission_rate(self, transmission_rate):
         self.transmission_rate = transmission_rate
 
-    def to_dict(self):
-        return {
-            **super().to_dict(),
-            'pathogen': self.pathogen,
-            'transmission_rate': self.transmission_rate
-        }
 
 
 class DisasterManMade(Disaster):
@@ -84,9 +72,3 @@ class DisasterManMade(Disaster):
     def set_economic_impact(self, economic_impact):
         self.economic_impact = economic_impact
 
-    def to_dict(self):
-        return {
-            **super().to_dict(),
-            'cause': self.cause,
-            'economic_impact': self.economic_impact
-        }
