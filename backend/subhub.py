@@ -10,6 +10,7 @@ from models.disaster import DisasterFactory, DisasterNatural, DisasterBiological
 from csv_utils import write_csv_file, read_csv_file, file_exists
 
 import threading
+import uuid
 
 disasters_lock = threading.Lock()
 disasters = []
@@ -57,6 +58,7 @@ def add_new_disaster():
         "error": "All fields are required. Missing fields: name, description"
     }
     """
+    disaster_id = str(uuid.uuid4())
     disaster_type = request.json.get('disaster_type')
     name = request.json.get('name')
     description = request.json.get('description')
@@ -80,6 +82,7 @@ def add_new_disaster():
     if disaster_type not in valid_disaster_types:
         return jsonify({'error': f"Invalid disaster type: {disaster_type}. Valid types are: {valid_disaster_types}"}), 400
     disaster = DisasterFactory().create_disaster(
+        disaster_id=disaster_id,
         disaster_type=disaster_type,
         name=name,
         description=description,
