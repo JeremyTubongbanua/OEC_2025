@@ -33,8 +33,8 @@ export default function ReportDisaster() {
          disasterType: 'natural',
          name: 'Earthquake',
          description: '123',
-         longitude: 43.2610131,
-         latitude: -79.9226414,
+         longitude: -79.9226414,
+         latitude: 43.2610131,
       },
    });
 
@@ -181,6 +181,28 @@ export default function ReportDisaster() {
                                     'Longitude:',
                                     position.coords.longitude
                                  );
+                                 // update address field
+                                 const lat = position.coords.latitude;
+                                 const lng = position.coords.longitude;
+                                 // update the address field in the form
+                                 const addressInput = document.querySelector('input[name="address"]') as HTMLInputElement | null;
+                                 const longitudeInput = document.querySelector('input[name="longitude"]') as HTMLInputElement | null;
+                                 const latitudeInput = document.querySelector('input[name="latitude"]') as HTMLInputElement | null;
+
+                                 if (longitudeInput && latitudeInput) {
+                                    longitudeInput.value = lng.toString();
+                                    latitudeInput.value = lat.toString();
+                                 }
+
+                                 fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`)
+                                    .then((response) => response.json())
+                                    .then((data) => {
+                                       const address = data.display_name;
+                                       console.log(address);
+                                       if (addressInput) {
+                                          addressInput.value = address;
+                                       }
+                                    });
                               },
                               (error) => {
                                  console.error(
