@@ -1,10 +1,10 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import LeafletMap from '@/components/map';
 
 export default function GetUserLocation() {
    const [location, setLocation] = useState<GeolocationPosition | null>(null);
+   const [disasterCount, setDisasterCount] = useState(0);
 
    useEffect(() => {
       if ('geolocation' in navigator) {
@@ -26,7 +26,7 @@ export default function GetUserLocation() {
       if (location) {
          let lat = location.coords.latitude;
          let lng = location.coords.longitude;
-         let radius = 100;
+         let radius = 20000;
 
          type JeremyData = {
             id: string;
@@ -39,12 +39,14 @@ export default function GetUserLocation() {
          };
 
          console.log(lat, lng);
+         console.log('Fetching subhubs...');
 
          fetch(
             `http://40.233.92.183:3000/get_subhubs?radius_km=${radius}&longitude=${lng}&latitude=${lat}`
          ).then((response) => {
             response.json().then((data) => {
                const jeremydata: JeremyData[] = Array.isArray(data) ? data : [];
+               console.log(jeremydata);
 
                jeremydata.forEach(({ port, name }) => {
                   fetch(`http://40.233.92.183:${port}/disasters`).then(
@@ -53,7 +55,7 @@ export default function GetUserLocation() {
                            console.log(`Disasters for subhub ${name}:`, data);
                            const disasterDataArray = data.disasters;
 
-                           alert('There are this many disasters in your area: ' + disasterDataArray.length);
+                           setDisasterCount(disasterDataArray.length);
                         });
                      }
                   );
@@ -61,19 +63,30 @@ export default function GetUserLocation() {
             });
          });
       }
-   }, [location])
+   }, [location]);
+
+   console.log(disasterCount);
 
    return (
-      <div>
-         {location ? (
-            <div>
-               <p>Latitude: {location.coords.latitude}</p>
-               <p>Longitude: {location.coords.longitude}</p>
+      <>
+         {disasterCount > 0 && (
+            <div className="border border-red-500 bg-red-200 py-2 w-full text-center">
+               <p>
+                  There are currently {disasterCount} disasters near you. Stay
+                  safe and take necessary precautions!
+               </p>
+               <p>
+                  For more information, please click{' '}
+                  <a
+                     href="https://www.canada.ca/en/health-canada/services/health-concerns/emergencies-disasters.html"
+                     className="underline"
+                  >
+                     here
+                  </a>
+                  .
+               </p>
             </div>
-         ) : (
-            <p>Loading location...</p>
          )}
-
-      </div>
+      </>
    );
 }
