@@ -31,7 +31,7 @@ National Disaster's Canada(NDC) Tracker is a fully encompassing web application 
 
 ## Breakdown of Front-end
 
-The front-end uses ReactJS, NextJS, TailwindCSS, LeafletJS, Shadcnui, and several libraries.
+The front-end uses ReactJS, NextJS, TailwindCSS, LeafletJS, Shadcnui, and several libraries. The front-end was built for accessibility with a easy to read color palette.
 
 Libraries used:
 
@@ -281,6 +281,9 @@ npm run dev
 ```
 
 4. Open on localhost:3000
+
+## Team Name
+The Neighbourhood
 
 ## Authors
 
