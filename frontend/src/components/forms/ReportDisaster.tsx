@@ -6,9 +6,6 @@ import { z } from 'zod';
 
 import { Button } from '@/components/ui/button';
 import { Label } from '../ui/label';
-import fetchLngLat from '@/actions/fetchLngLat';
-
-import { LeafletMap } from '@/components/common/Map';
 
 const reportDisasterSchema = z.object({
    address: z.string(),
@@ -16,8 +13,8 @@ const reportDisasterSchema = z.object({
    disasterType: z.string(),
    name: z.string(),
    description: z.string(),
-   longitude: z.string(),
-   latitude: z.string(),
+   longitude: z.number(),
+   latitude: z.number(),
 });
 
 export default function ReportDisaster() {
@@ -25,6 +22,7 @@ export default function ReportDisaster() {
       register,
       handleSubmit,
       formState: { errors },
+      setValue,
    } = useForm({
       resolver: zodResolver(reportDisasterSchema),
       defaultValues: {
@@ -33,8 +31,8 @@ export default function ReportDisaster() {
          disasterType: 'natural',
          name: 'Earthquake',
          description: '123',
-         longitude: 43.2610131,
-         latitude: -79.9226414,
+         longitude: 0,
+         latitude: 0,
       },
    });
 
@@ -44,8 +42,8 @@ export default function ReportDisaster() {
       address: string;
       radius: string;
       disasterType: string;
-      longitude: string;
-      latitude: string;
+      longitude: number;
+      latitude: number;
    }) {
       const disasterType = data.disasterType;
       const name = data.name;
@@ -56,7 +54,7 @@ export default function ReportDisaster() {
       const latitude = data.latitude;
 
       let get_subhubs_url = `http://40.233.92.183:3000/get_subhubs?radius_km=${radius}&longitude=${longitude}&latitude=${latitude}`;
-      console.log('get_subhubs_url:', get_subhubs_url);
+
       fetch(get_subhubs_url)
          .then((response) => response.json())
          .then((data) => {
@@ -98,57 +96,6 @@ export default function ReportDisaster() {
          .catch((error) => {
             console.error('Error fetching subhubs:', error);
          });
-
-      // const formattedAddress = address.replace(/\s+/g, '+');
-      // fetchLngLat(formattedAddress).then((data) => {
-      //    console.log(data)
-      //     try {
-      //       lat = Number(data[0].lat);
-      //       lng = Number(data[0].lon);
-      //       if (lat === 0 && lng === 0) {
-      //          throw new Error('Error fetching latitude and longitude');
-      //       }
-      //       console.log(lat, lng);
-
-      //       // now look at each sub hub and make /disasters calls to each
-      //     } catch (error) {
-      //       // console.error(error.message);
-      //       alert("Error fetching longitude and latitude from Address.. Are you sure the address is entered correctly?");
-      //       return;
-      //     }
-      // });
-
-      // type DisasterData = {
-      //    id: string;
-      //    ip: string;
-      //    latitude: number;
-      //    longitude: number;
-      //    name: string;
-      //    port: string;
-      //    radius_km: string;
-      //    disasterType: string;
-      // };
-
-      // let disasterData: DisasterData[] = [];
-      // fetch('http://40.233.92.183:3000/add_new_disaster', {
-      //    method: 'POST',
-      //    headers: {
-      //    'Content-Type': 'application/json',
-      //    },
-      //    body: JSON.stringify({
-      //       radius_km: radius,
-      //       longitude: lng,
-      //       latitude: lat,
-      //       disasterType: disasterType,
-      //       name: name,
-      //       description: description,
-      //    }),
-      // }).then((response) => {
-      //    response.json().then((data) => {
-      //    disasterData = data;
-      //    console.log('disasterData', disasterData);
-      //    });
-      // });
    }
 
    return (
@@ -172,6 +119,7 @@ export default function ReportDisaster() {
                   <Button
                      type="button"
                      onClick={() => {
+                        console.log('click');
                         if (navigator.geolocation) {
                            navigator.geolocation.getCurrentPosition(
                               (position) => {
@@ -179,6 +127,11 @@ export default function ReportDisaster() {
                                     'Latitude:',
                                     position.coords.latitude,
                                     'Longitude:',
+                                    position.coords.longitude
+                                 );
+                                 setValue('latitude', position.coords.latitude);
+                                 setValue(
+                                    'longitude',
                                     position.coords.longitude
                                  );
                               },
