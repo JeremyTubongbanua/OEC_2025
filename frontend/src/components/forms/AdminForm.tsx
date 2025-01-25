@@ -84,7 +84,10 @@ export default function AdminForm() {
                         const disasterDataArray = data.disasters;
 
                         disasterDataArray.forEach((disaster) => {
-                           setDisasters((prev) => [...prev, disaster]);
+                           setDisasters((prev) => [
+                              ...prev,
+                              { ...disaster, port },
+                           ]);
                         });
                      });
                   }
@@ -130,7 +133,7 @@ export default function AdminForm() {
             <Button type="submit">Submit</Button>
          </form>
 
-         <div>
+         <div className="flex flex-col gap-6">
             {disasters.length > 0 &&
                disasters.map((disaster) => (
                   <DisasterRemove key={disaster.name} disaster={disaster} />

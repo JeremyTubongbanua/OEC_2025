@@ -12,7 +12,6 @@ import fetchLngLat from '@/actions/fetchLngLat';
 import DisasterDisplay from '../common/DisasterDisplay';
 
 import Map from '@/components/map';
-import MapMarker from '/public/map-marker.svg';
 
 const enterAddressSchema = z.object({
    address: z.string(),
