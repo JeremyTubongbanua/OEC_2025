@@ -282,6 +282,9 @@ npm run dev
 
 4. Open on localhost:3000
 
+## Team Name
+The Neighbourhood
+
 ## Authors
 
 - [Jeremy Mark Tubongbanua](github.com/JeremyTubongbanua)
