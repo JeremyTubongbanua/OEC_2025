@@ -1,4 +1,4 @@
-15,manmade,Industrial Fire,Major fire at manufacturing facility,43.242850810568946,-79.73087763168856,7.0
-16,biological,Algal Bloom,Toxic algae contamination in water bodies,43.222338536755046,-79.75217124172548,20.0
-17,natural,Severe Storm,Intense thunderstorm with potential for flooding,43.21282466381638,-79.71372534099031,15.0
-18,manmade,Power Grid Failure,Widespread electrical infrastructure breakdown,43.206546758969125,-79.67184958547526,30.0
+15,manmade,Industrial Fire,Major fire at manufacturing facility,-79.73087763168856,43.242850810568946,7.0
+16,biological,Algal Bloom,Toxic algae contamination in water bodies,-79.75217124172548,43.222338536755046,20.0
+17,natural,Severe Storm,Intense thunderstorm with potential for flooding,-79.71372534099031,43.21282466381638,15.0
+18,manmade,Power Grid Failure,Widespread electrical infrastructure breakdown,-79.67184958547526,43.206546758969125,30.0

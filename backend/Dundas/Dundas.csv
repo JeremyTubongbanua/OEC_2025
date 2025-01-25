@@ -1,10 +1,10 @@
 0,natural,Earthquake,Major earthqu1ake,-118.2437,34.0522,50.0
-1,manmade,Oil leak,Hazardous oil spill requiring containment,43.26691127633942,-79.77373983912754,3.0
-2,natural,Tornado,Severe windstorm causing widespread damage,43.251335599504124,-79.87690025166192,50.0
-3,manmade,Transportation accident,Major vehicle collision incident,43.15423471652471,-79.91809897193221,10.0
-4,natural,Landslide,Ground movement causing terrain instability,43.22583209403948,-79.88004385453455,5.0
-5,biological,Food contamination crisis,Widespread food supply contamination,43.23032686621058,-80.08083395630251,40.0
-6,natural,Forest Fire,Rapidly spreading wildfire threatening residential areas,43.258683067646025,-80.00769185869119,25.0
-7,biological,Viral Outbreak,Local outbreak of infectious disease requiring containment,43.25268069481346,-79.96753215231814,15.0
-8,manmade,Chemical Spill,Hazardous material leak from industrial facility,43.28204019393853,-79.92991410543128,8.0
-9,natural,Flash Flood,Sudden flooding due to heavy rainfall,43.302654625240685,-79.91047790625413,12.0
+1,manmade,Oil leak,Hazardous oil spill requiring containment,-79.77373983912754,43.26691127633942,3.0
+2,natural,Tornado,Severe windstorm causing widespread damage,-79.87690025166192,43.251335599504124,50.0
+3,manmade,Transportation accident,Major vehicle collision incident,-79.91809897193221,43.15423471652471,10.0
+4,natural,Landslide,Ground movement causing terrain instability,-79.88004385453455,43.22583209403948,5.0
+5,biological,Food contamination crisis,Widespread food supply contamination,-80.08083395630251,43.23032686621058,40.0
+6,natural,Forest Fire,Rapidly spreading wildfire threatening residential areas,-80.00769185869119,43.258683067646025,25.0
+7,biological,Viral Outbreak,Local outbreak of infectious disease requiring containment,-79.96753215231814,43.25268069481346,15.0
+8,manmade,Chemical Spill,Hazardous material leak from industrial facility,-79.92991410543128,43.28204019393853,8.0
+9,natural,Flash Flood,Sudden flooding due to heavy rainfall,-79.91047790625413,43.302654625240685,12.0
