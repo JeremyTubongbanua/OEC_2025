@@ -1,3 +1,4 @@
+import GetUserLocation from '@/components/location/GetUserLocation';
 import Link from 'next/link';
 
 export default function Home() {
@@ -79,6 +80,7 @@ export default function Home() {
                </Link>
             </div>
          </div>
+         <GetUserLocation/>
       </div>
    );
 }

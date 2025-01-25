@@ -22,6 +22,47 @@ export default function GetUserLocation() {
       }
    }, []);
 
+   useEffect(() => {
+      if (location) {
+         let lat = location.coords.latitude;
+         let lng = location.coords.longitude;
+         let radius = 100;
+
+         type JeremyData = {
+            id: string;
+            ip: string;
+            latitude: number;
+            longitude: number;
+            name: string;
+            port: string;
+            radius_km: string;
+         };
+
+         console.log(lat, lng);
+
+         fetch(
+            `http://40.233.92.183:3000/get_subhubs?radius_km=${radius}&longitude=${lng}&latitude=${lat}`
+         ).then((response) => {
+            response.json().then((data) => {
+               const jeremydata: JeremyData[] = Array.isArray(data) ? data : [];
+
+               jeremydata.forEach(({ port, name }) => {
+                  fetch(`http://40.233.92.183:${port}/disasters`).then(
+                     (response) => {
+                        response.json().then((data) => {
+                           console.log(`Disasters for subhub ${name}:`, data);
+                           const disasterDataArray = data.disasters;
+
+                           alert('There are this many disasters in your area: ' + disasterDataArray.length);
+                        });
+                     }
+                  );
+               });
+            });
+         });
+      }
+   }, [location])
+
    return (
       <div>
          {location ? (
@@ -33,9 +74,6 @@ export default function GetUserLocation() {
             <p>Loading location...</p>
          )}
 
-         <LeafletMap
-            position={[location?.coords.latitude, location?.coords.longitude]}
-         />
       </div>
    );
 }
