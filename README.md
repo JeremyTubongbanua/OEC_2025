@@ -10,6 +10,7 @@ National Disaster's Canada(NDC) Tracker is a fully encompassing web application 
 ## Breakdown of Back-end
 
 ## Technologies Used
+ReactJS, NextJS, TailwindCSS, LeafletJS, Shadcnui, Python, Flask, Request Libraries, HTTPS, HTML, CSS, Flaskcores, Docker, CI/CD Github Actions, Unix Shellscripting, Python PIP
 
 # License
 
