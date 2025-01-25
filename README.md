@@ -1,4 +1,4 @@
-# oec_2025
+# OEC_2025
 
 ## Description
 National Disaster's Canada Tracker
