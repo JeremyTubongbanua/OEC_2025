@@ -7,6 +7,7 @@ import {
    CardTitle,
 } from '../ui/card';
 
+// Disaster interface
 interface Disaster {
    name: string;
    description: string;
@@ -16,10 +17,12 @@ interface Disaster {
    disaster_type: string;
 }
 
+// DisasterDisplayProps interface
 interface DisasterDisplayProps {
    disaster: Disaster;
 }
 
+// DisasterDisplay component
 export default function DisasterDisplay({
    disaster,
 }: DisasterDisplayProps): ReactNode {

@@ -15,6 +15,7 @@ import Map from '@/components/map';
 import MapMarker from '/public/map-marker.svg';
 import DisasterRemove from '../common/DisasterRemove';
 
+// enterAddressSchema
 const enterAddressSchema = z.object({
    address: z.string(),
    radius: z.string(),
@@ -23,6 +24,7 @@ const enterAddressSchema = z.object({
    //    postalCode: z.string(),
 });
 
+// AdminForm component
 export default function AdminForm() {
    const [disasters, setDisasters] = useState<any[]>([]);
    const [lng, setLng] = useState(0);
@@ -43,6 +45,7 @@ export default function AdminForm() {
       },
    });
 
+   // function to handle form submission
    function onSubmit(data: { address: string; radius: string }) {
       setDisasters([]);
       const address = data.address;
@@ -51,6 +54,7 @@ export default function AdminForm() {
       let latdummy = 0;
       let lngdummy = 0;
 
+      // fetch longitude and latitude
       const formattedAddress = address.replace(/\s+/g, '+');
       fetchLngLat(formattedAddress).then((data) => {
          latdummy = Number(data[0].lat);
@@ -60,6 +64,7 @@ export default function AdminForm() {
          console.log(lat, lng);
       });
 
+      // fetch subhubs
       type JeremyData = {
          id: string;
          ip: string;
@@ -70,6 +75,7 @@ export default function AdminForm() {
          radius_km: string;
       };
 
+      // console.log(lat, lng);
       fetch(
          `http://40.233.92.183:3000/get_subhubs?radius_km=${radius}&longitude=${lng}&latitude=${lat}`
       ).then((response) => {

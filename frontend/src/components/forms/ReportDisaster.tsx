@@ -36,6 +36,8 @@ export default function ReportDisaster() {
       },
    });
 
+   // function to handle form submission
+
    function onSubmit(data: {
       name: string;
       description: string;
@@ -53,6 +55,7 @@ export default function ReportDisaster() {
       const longitude = data.longitude;
       const latitude = data.latitude;
 
+      // fetch subhubs
       let get_subhubs_url = `http://40.233.92.183:3000/get_subhubs?radius_km=${radius}&longitude=${longitude}&latitude=${latitude}`;
 
       fetch(get_subhubs_url)

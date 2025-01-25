@@ -6,6 +6,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Label } from '../ui/label';
 import { Button } from '../ui/button';
 
+// Disaster interface
 interface Disaster {
    disaster_id: string;
    name: string;
@@ -17,10 +18,12 @@ interface Disaster {
    port: string;
 }
 
+// DisasterDisplayProps interface
 interface DisasterDisplayProps {
    disaster: Disaster;
 }
 
+// adminDisasterSchema
 const adminDisasterSchema = z.object({
    disaster_id: z.string(),
    name: z.string(),
@@ -31,6 +34,7 @@ const adminDisasterSchema = z.object({
    radius: z.string(),
 });
 
+// DisasterRemove component
 export default function DisasterRemove({
    disaster,
 }: DisasterDisplayProps): ReactNode {
