@@ -86,6 +86,39 @@ def remove_disaster():
             return jsonify({'success': True}), 200
     return jsonify({'error': f"Disaster with id {disaster_id} not found"}), 404
 
+# curl -X POST http://40.233.92.183:3001/edit_disater -H "Content-Type: application/json" -d '{"disaster_id": "1", "disaster_type": "natural", "name": "Earthquake", "description": "Major earthquake", "longitude": -118.2437, "latitude": 34.0522, "radius_km": 50}'
+@app.route('/edit_disater', methods=['POST'])
+def edit_disaster():
+    disaster_id = request.json.get('disaster_id')
+    disaster_type = request.json.get('disaster_type')
+    name = request.json.get('name')
+    description = request.json.get('description')
+    longitude = request.json.get('longitude')
+    latitude = request.json.get('latitude')
+    radius_km = request.json.get('radius_km')
+
+    if not disaster_id:
+        return jsonify({'error': 'Disaster id is required'}), 400
+
+    for disaster in disasters:
+        if str(disaster.disaster_id) == str(disaster_id):
+            with disasters_lock:
+                if disaster_type:
+                    disaster.disaster_type = disaster_type
+                if name:
+                    disaster.name = name
+                if description:
+                    disaster.description = description
+                if longitude:
+                    disaster.longitude = longitude
+                if latitude:
+                    disaster.latitude = latitude
+                if radius_km:
+                    disaster.radius_km = radius_km
+            sync_disasters(args.name)
+            return jsonify({'success': True}), 200
+    return jsonify({'error': f"Disaster with id {disaster_id} not found"}), 404
+
 # curl -X GET "http://40.233.92.183:3001/disasters"
 @app.route('/disasters')
 def get_disasters():
@@ -174,7 +207,7 @@ if __name__ == '__main__':
             disasters_from_file = read_csv_file(args.existing_disasters)
 
             for disaster in disasters_from_file:
-                disaster_id, disaster_type, name, description, longitude, latitude, radius_km = disaster
+                disaster_id, disaster_type, name, description, longitude, latitude, radius_km, *_ = disaster
                 disaster = DisasterFactory().create_disaster(
                     disaster_id=disaster_id,
                     disaster_type=disaster_type,
