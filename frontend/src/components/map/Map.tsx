@@ -43,8 +43,8 @@ function Map({ position, disasters }: MapProps) {
                <Marker
                   position={
                      [
-                        Number(disaster.longitude),
                         Number(disaster.latitude),
+                        Number(disaster.longitude),
                      ] as [number, number]
                   }
                   icon={L.icon({
